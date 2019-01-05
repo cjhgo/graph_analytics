@@ -33,17 +33,17 @@ void counting_sort(std::vector<vid_type> input, std::vector<size_t> &permute,
         counter[e]++;
     }
     permute.resize(input.size());
+    for(size_t i = 1; i < counter.size(); i++)
+    {
+        counter[i] += counter[i-1];
+    }    
+    prefix_sum.clear();
+    prefix_sum.push_back(0);    
+    prefix_sum.insert(prefix_sum.begin()+1, counter.begin(), counter.end());    
     for(int i = input.size()-1; i >= 0; i--)
     {
         vid_type vid = input[i];
         permute[--counter[vid]] = i;
-    }
-    prefix_sum.resize(counter.size()+1);
-    prefix_sum[0]=0;
-    for(size_t i = 1; i < prefix_sum.size(); i++)
-    {
-        vid_type res = prefix_sum[i-1]+counter[i-1];        
-        prefix_sum[i]=res;
     }
 }
 template<typename VertexDataType, typename EdgeDataType>
@@ -151,6 +151,7 @@ bool Graph<VertexDataType, EdgeDataType>::add_edge(vid_type source, vid_type tar
     edge_buffer.source.push_back(source);
     edge_buffer.target.push_back(target);
     edge_buffer.edata.push_back(edata);
+    return true;
 }
 template<typename VertexDataType, typename EdgeDataType>
 void Graph<VertexDataType, EdgeDataType>::finalized()
@@ -185,6 +186,7 @@ void Graph<VertexDataType, EdgeDataType>::finalized()
         vid_type invid=x.first, vid=x.second;
         vid_to_invid[vid]=invid;
     }    
+    this->vertices.resize(max_vid);
 }
 
 template<typename VertexDataType, typename EdgeDataType>
