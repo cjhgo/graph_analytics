@@ -3,8 +3,8 @@
 #include<vector>
 #include<string>
 #include<map>
-
-typedef int vertex_data_type;
+#include<queue>
+typedef char vertex_data_type;
 typedef int edge_data_type;
 typedef Graph<vertex_data_type, edge_data_type> graph_type;
 typedef typename graph_type::Vertex vertex_type;
@@ -12,19 +12,36 @@ int main(int argc, char const *argv[])
 {
     std::string fname = "data.txt";
     graph_type g;
-    g.load(fname);
+    if( not g.load(fname))
+    return 1;
     g.finalized();
-    vertex_type v = g.get_vertex(0);
-    std::cout<<v.invid<<"#"<<v.vid<<"\n--->"<<std::endl;
-    for(auto e : g.out_edges(v.vid))
+    std::cout<<"graph info:"<<std::endl<<g.num_vertices()<<"\t"<<g.num_edges()<<std::endl;
+    for(auto& e : g.vertices)
     {
-        std::cout<<e.first<<"\t";
+        e='0';
     }
-    std::cout<<std::endl<<v.invid<<"#"<<v.vid<<"\n<---"<<std::endl;    
-    for(auto e : g.in_edges(v.vid))
+    std::queue<vid_type> q;
+    q.push(0);
+    while( not q.empty())
     {
-        std::cout<<e.first<<"\t";
-    }    
-    std::cout<<std::endl<<g.num_vertices()<<"\t"<<g.num_edges()<<std::endl;
+        vid_type  top = q.front();
+        vertex_type v = g.get_vertex(top);        
+        if( g.vertices[top] == '0')
+            std::cout<<v.invid<<"#"<<v.vid<<std::endl;
+        for(auto e : g.out_edges(v.vid))
+        {
+            if( g.vertices[e.first] == '0')
+                q.push(e.first);
+        }
+        for(auto e : g.in_edges(v.vid))
+        {
+            if( g.vertices[e.first] == '0')
+                q.push(e.first);
+        }    
+        g.vertices[top]='1';
+        q.pop();
+    }
+
+    
     return 0;
 }
