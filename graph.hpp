@@ -89,15 +89,17 @@ public:
         return Edge();
     };
     void finalized();    
+    void export_graph(std::string fname);
 private:
     vid_type transe_vid(vid_type vid);
     bool add_edge(vid_type source, vid_type target, EdgeDataType edata=EdgeDataType() );    
 private:
-    vid_type max_vid;
-    Edge_buffer<EdgeDataType> edge_buffer;
-    std::vector<VertexDataType> vertices;
+    vid_type max_vid;       
     std::map<vid_type, vid_type> vid_to_invid, invid_to_vid;
     csr_storage csr, csc;
+public:
+    std::vector<VertexDataType> vertices;    
+    Edge_buffer<EdgeDataType> edge_buffer; 
 };
 
 template<typename VertexDataType, typename EdgeDataType>
@@ -189,6 +191,15 @@ void Graph<VertexDataType, EdgeDataType>::finalized()
     this->vertices.resize(max_vid);
 }
 
+template<typename VertexDataType, typename EdgeDataType>
+void Graph<VertexDataType, EdgeDataType>::export_graph(std::string fname)
+{
+    std::ofstream outfile(fname);
+    for(size_t i = 0; i < this->edge_buffer.edata.size();i++)
+    {
+        outfile<<this->edge_buffer.source[i]<<","<<this->edge_buffer.target[i]<<"\n";        
+    }
+}
 template<typename VertexDataType, typename EdgeDataType>
 edge_list_type Graph<VertexDataType, EdgeDataType>::out_edges(vid_type vid)
 {

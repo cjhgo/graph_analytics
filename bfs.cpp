@@ -1,4 +1,5 @@
 #include"graph.hpp"
+#include<cstdlib>
 #include<iostream>
 #include<vector>
 #include<string>
@@ -12,9 +13,14 @@ typedef typename graph_type::Vertex vertex_type;
 int main(int argc, char const *argv[])
 {
     std::string fname = "data.txt";
+    if( argc > 1)
+    fname =  std::string(argv[1]);
     graph_type g;
     if( not g.load(fname))
-    return 1;
+    {
+        std::cout<<"load error\n";
+        return 1;
+    }    
     g.finalized();
     std::cout<<"graph info:"<<std::endl<<g.num_vertices()<<"\t"<<g.num_edges()<<std::endl;
     for(auto& e : g.vertices)
@@ -22,7 +28,10 @@ int main(int argc, char const *argv[])
         e='0';
     }
     std::queue<vid_type> q;
-    q.push(0);
+    if( argc >= 3)
+        q.push(std::atoi(argv[2]));
+    else
+        q.push(0);
     std::set<vid_type> inserted;
     size_t cnt = 0;
     while( not q.empty())
@@ -32,7 +41,8 @@ int main(int argc, char const *argv[])
         if( g.vertices[top] == '0')
         {
             ++cnt;
-            std::cout<<v.invid<<"#"<<v.vid<<std::endl;
+            //std::cout<<v.invid<<"#"<<v.vid<<std::endl;
+            std::cout<<v.invid<<std::endl;
         }            
         for(auto e : g.out_edges(v.vid))
         {
@@ -52,7 +62,7 @@ int main(int argc, char const *argv[])
         }    
         g.vertices[top]='1';
         q.pop();
-        std::cout<<"\n----"<<cnt*1.0/g.num_vertices()<<"----"<<std::endl;        
+        //std::cout<<"\n----"<<cnt*1.0/g.num_vertices()<<"----"<<std::endl;        
     }
     std::cout<<cnt<<"\t"<<g.num_vertices()<<std::endl;
     
