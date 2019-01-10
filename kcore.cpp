@@ -1,3 +1,16 @@
+/**
+ *description : a naive kcore implementations 
+ *assign degree to vertex data
+ *iteratte vertex
+ * for v in V
+ * if 0 < v.data < k
+ *  v.data = -1
+ *  for vv in v.neighbor
+ *    vv.data-- 
+ * when not exist v that 0 < data <k
+ * break
+ * 
+**/
 #include"graph.hpp"
 #include<cstdlib>
 #include<iostream>
